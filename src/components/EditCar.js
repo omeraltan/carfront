@@ -3,6 +3,11 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
+import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
+import EditIcon from '@mui/icons-material/Edit';
+import TextField from '@mui/material/TextField';
+import Stack from '@mui/material/Stack';
 
 const EditCar = props => {
   const [open, setOpen] = useState(false);
@@ -16,13 +21,13 @@ const EditCar = props => {
   });
   const handleClickOpen = () => {
     setCar({
-        brand: props.data.row.brand,
-        model: props.data.row.model,
-        color: props.data.row.color,
-        year: props.data.row.year,
-        fuel: props.data.row.fuel,
-        price: props.data.row.price
-    })
+      brand: props.data.row.brand,
+      model: props.data.row.model,
+      color: props.data.row.color,
+      year: props.data.row.year,
+      fuel: props.data.row.fuel,
+      price: props.data.row.price,
+    });
     setOpen(true);
   };
   const handleClose = () => {
@@ -36,24 +41,23 @@ const EditCar = props => {
   };
   return (
     <div>
-      <button onClick={handleClickOpen}>Edit</button>
+      <IconButton onClick={handleClickOpen}>
+        <EditIcon color="primary" />
+      </IconButton>
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Edit car</DialogTitle>
         <DialogContent>
-          <input placeholder="Brand" name="brand" value={car.brand} onChange={handleChange} />
-          <br />
-          <input placeholder="Model" name="model" value={car.model} onChange={handleChange} />
-          <br />
-          <input placeholder="Color" name="color" value={car.color} onChange={handleChange} />
-          <br />
-          <input placeholder="Year" name="year" value={car.year} onChange={handleChange} />
-          <br />
-          <input placeholder="Price" name="price" value={car.price} onChange={handleChange} />
-          <br />
+          <Stack spacing={2} mt={1}>
+            <TextField label="Brand" name="brand" autoFocus variant="standard" value={car.brand} onChange={handleChange} />
+            <TextField label="Model" name="model" variant="standard" value={car.model} onChange={handleChange} />
+            <TextField label="Color" name="color" variant="standard" value={car.color} onChange={handleChange} />
+            <TextField label="Year" name="year" variant="standard" value={car.year} onChange={handleChange} />
+            <TextField label="Price" name="price" variant="standard" value={car.price} onChange={handleChange} />
+          </Stack>
         </DialogContent>
         <DialogActions>
-          <button onClick={handleClose}> Cancel</button>
-          <button onClick={handleSave}>Save</button>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={handleSave}>Save</Button>
         </DialogActions>
       </Dialog>
     </div>

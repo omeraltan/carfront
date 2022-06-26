@@ -4,6 +4,9 @@ import { DataGrid, GridToolbarContainer, GridToolbarExport, gridClasses } from '
 import { Snackbar } from '@mui/material';
 import AddCar from './AddCar';
 import EditCar from './EditCar.js';
+import Stack from '@mui/material/Stack';
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const CarList = () => {
   const [cars, setCars] = useState([]);
@@ -26,7 +29,11 @@ const CarList = () => {
       headerName: '',
       sortable: false,
       filterable: false,
-      renderCell: row => <button onClick={() => onDelClick(row.id)}>Delete</button>,
+      renderCell: row => (
+        <IconButton onClick={() => onDelClick(row.id)}>
+          <DeleteIcon color="error" />
+        </IconButton>
+      ),
     },
   ];
 
@@ -98,9 +105,17 @@ const CarList = () => {
 
   return (
     <React.Fragment>
-      <AddCar addCar={addCar} />
+      <Stack mt={2} mb={2}>
+        <AddCar addCar={addCar} />
+      </Stack>
       <div style={{ height: 500, width: '100%' }}>
-        <DataGrid rows={cars} columns={columns} disableSelectionOnClick={true} getRowId={row => row._links.self.href} components={{ Toolbar: CustomToolbar }}/>
+        <DataGrid
+          rows={cars}
+          columns={columns}
+          disableSelectionOnClick={true}
+          getRowId={row => row._links.self.href}
+          components={{ Toolbar: CustomToolbar }}
+        />
         <Snackbar open={open} autoHideDuration={2000} onClose={() => setOpen(false)} message="Car deleted" />
       </div>
     </React.Fragment>
