@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { SERVER_URL } from '../constants';
-import { DataGrid } from '@mui/x-data-grid';
+import { DataGrid, GridToolbarContainer, GridToolbarExport, gridClasses } from '@mui/x-data-grid';
 import { Snackbar } from '@mui/material';
 import AddCar from './AddCar';
+import EditCar from './EditCar.js';
 
 const CarList = () => {
   const [cars, setCars] = useState([]);
@@ -13,6 +14,13 @@ const CarList = () => {
     { field: 'color', headerName: 'Color', width: 200 },
     { field: 'year', headerName: 'Year', width: 150 },
     { field: 'price', headerName: 'Price', width: 150 },
+    {
+      field: '_links.car.href',
+      headerName: '',
+      sortable: false,
+      filterable: false,
+      renderCell: row => <EditCar data={row} updateCar={updateCar} />,
+    },
     {
       field: '_links.self.href',
       headerName: '',
@@ -48,7 +56,7 @@ const CarList = () => {
     }
   };
 
-  const addCar = (car) => {
+  const addCar = car => {
     fetch(SERVER_URL + '/api/arabalar', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -64,11 +72,35 @@ const CarList = () => {
       .catch(err => console.error(err));
   };
 
+  const updateCar = (car, link) => {
+    fetch(link, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(car),
+    })
+      .then(response => {
+        if (response.ok) {
+          fetchCars();
+        } else {
+          alert('Something went wrong!');
+        }
+      })
+      .catch(err => console.error(err));
+  };
+
+  function CustomToolbar() {
+    return (
+      <GridToolbarContainer className={gridClasses.toolbarContainer}>
+        <GridToolbarExport />
+      </GridToolbarContainer>
+    );
+  }
+
   return (
     <React.Fragment>
       <AddCar addCar={addCar} />
       <div style={{ height: 500, width: '100%' }}>
-        <DataGrid rows={cars} columns={columns} disableSelectionOnClick={true} getRowId={row => row._links.self.href} />
+        <DataGrid rows={cars} columns={columns} disableSelectionOnClick={true} getRowId={row => row._links.self.href} components={{ Toolbar: CustomToolbar }}/>
         <Snackbar open={open} autoHideDuration={2000} onClose={() => setOpen(false)} message="Car deleted" />
       </div>
     </React.Fragment>
